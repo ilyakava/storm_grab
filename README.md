@@ -1,0 +1,1 @@
+To run, type `ruby "run.rb"` in the terminal.
