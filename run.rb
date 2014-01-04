@@ -8,19 +8,25 @@ class ScrapeArchitects
 
   def initialize
     @website_data = {}
-    scrape_archdaily()
+    fetch_architects
     self
   end
 
-  def html_safe(string)
+  def fetch_architects
+    scrape_archdaily
+  end
+
+  def google_queryify(string)
     URI::encode(string.gsub('&', '') + ' Architizer')
   end
 
-  def scrape_archdaily(last_page = 5)
+  def scrape_archdaily(last_page = 10)
     @website_data["archdaily"] = {}
 
     (1..last_page).each do |page_num|
       doc = Nokogiri::HTML(open("http://www.archdaily.com/page/#{page_num}/"))
+      # there are many identical nodes for each title, the first of a series of nodes
+      # contains architect information, the next identical are discarded, hence the hash
       nodes = doc.css('p.specs > strong > a').reverse
       titles = nodes.map do |node|
         node.parent.parent.parent.parent.children[1].children[1].attributes["title"].value
@@ -32,7 +38,7 @@ class ScrapeArchitects
       nodes.length.times do |i|
         @website_data["archdaily"][titles[i]] = {
           "name" => names[i],
-          "google_search" => "https://www.google.com/#q=#{html_safe(names[i])}",
+          "google_search" => "https://www.google.com/#q=#{google_queryify(names[i])}",
           "link" => links[i],
           "source" => "archdaily page #{page_num}"
         }
@@ -42,42 +48,11 @@ class ScrapeArchitects
   end
 
   def build_html
-    b = binding
-    ERB.new(<<-'END_DATA'.gsub(/^\s+/, ""), 0, "", "@html").result b
-      <?xml version="1.0" encoding="UTF-8"?>
-      <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-      <html>
-        <body>
-          <table>
-            <tbody>
-              <th>
-                <td>Architect Co</td>
-                <td>Google Search</td>
-                <td>Personal Link</td>
-                <td>Project Title</td>
-                <td>Source</td>
-                <td><%= @website_data.keys.first %></td>
-              </th>
-              <% @website_data.keys.each do |website| %>
-                <% @website_data[website].each_pair do |title, info_hash| %>
-                  <tr>
-                    <td><%= info_hash["name"] %></td>
-                    <td><a target="_blank" href="<%= info_hash["google_search"] %>">Google</a></td>
-                    <td><a target="_blank" href="<%= info_hash["link"] %>">Personal</a></td>
-                    <td><%= title %></td>
-                    <td><%= info_hash["source"] %></td>
-                  </tr>
-                <% end %>
-              <% end %>
-            </tbody>
-          </table>
-        </body>
-      <html>
-    END_DATA
+    ERB.new(File.read("blog_condensation.rhtml"), 0, "", "@html").result binding
   end
 
-  def export_html
-    File.open("table.html", "w") do |io|
+  def export_html(outfile_name = "table.html")
+    File.open(outfile_name, "w") do |io|
       io << build_html
     end
   end

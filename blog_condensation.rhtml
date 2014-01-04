@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <style>
+      h2 {
+        text-align: center;
+      }
+      table {
+        margin: 40px auto;
+      }
+      tr:nth-child(odd) {
+        background-color: #99CCFF;
+      }
+      a:visited {
+        color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Created: <%= Time.now %></h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Architect Co</th>
+          <th>Google Search</th>
+          <th>Personal Link</th>
+          <th>Project Title</th>
+          <th>Source</th>
+        </tr>
+        <% @website_data.keys.each do |website| %>
+          <% @website_data[website].each_pair do |title, info_hash| %>
+            <tr>
+              <td><%= info_hash["name"] %></td>
+              <td><a target="_blank" href="<%= info_hash["google_search"] %>">Google</a></td>
+              <td><a target="_blank" href="<%= info_hash["link"] %>">Personal</a></td>
+              <td><%= title %></td>
+              <td><%= info_hash["source"] %></td>
+            </tr>
+          <% end %>
+        <% end %>
+      </tbody>
+    </table>
+  </body>
+<html>
