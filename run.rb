@@ -39,6 +39,7 @@ class ScrapeArchitects
         @website_data["archdaily"][titles[i]] = {
           "name" => names[i],
           "google_search" => "https://www.google.com/#q=#{google_queryify(names[i])}",
+          "architizer_search" => "http://architizer.com/search/q/q:#{google_queryify(names[i])}/",
           "link" => links[i],
           "source" => "archdaily page #{page_num}"
         }
