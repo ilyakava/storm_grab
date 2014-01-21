@@ -20,6 +20,10 @@ class ScrapeArchitects
     URI::encode(string.gsub('&', '') + ' Architizer')
   end
 
+  def architizer_queryify(string)
+    URI::encode(string.gsub('&', ''))
+  end
+
   def scrape_archdaily(last_page = 10)
     @website_data["archdaily"] = {}
 
@@ -39,7 +43,7 @@ class ScrapeArchitects
         @website_data["archdaily"][titles[i]] = {
           "name" => names[i],
           "google_search" => "https://www.google.com/#q=#{google_queryify(names[i])}",
-          "architizer_search" => "http://architizer.com/search/q/q:#{google_queryify(names[i])}/",
+          "architizer_search" => "http://architizer.com/search/q/q:#{architizer_queryify(names[i])}/",
           "link" => links[i],
           "source" => "archdaily page #{page_num}"
         }
