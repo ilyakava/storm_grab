@@ -23,6 +23,7 @@ class SearchArchitizer
     scrape_architizer
     export_html
     puts "double click on table.html"
+    nil
   end
 
   def build_html
