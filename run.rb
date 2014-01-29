@@ -1,8 +1,57 @@
 require 'nokogiri'
 require 'open-uri'
 require 'erb'
+require 'pry'
+
+module ArchitizerHelpers
+
+  def architizer_queryify(string)
+    URI::encode(string.gsub('&', ''))
+  end
+
+end
+
+class SearchArchitizer
+
+  include ArchitizerHelpers
+
+  attr_accessor :queries, :website_data
+
+  def initialize(list_queries)
+    @queries = list_queries
+    @website_data = {}
+    scrape_architizer
+    export_html
+    puts "double click on table.html"
+  end
+
+  def build_html
+    ERB.new(File.read("auto_searcher.rhtml"), 0, "", "@html").result binding
+  end
+
+  def export_html(outfile_name = "table.html")
+    File.open(outfile_name, "w") do |io|
+      io << build_html
+    end
+  end
+
+  def scrape_architizer
+    @queries.each_with_index do |query, idx|
+      request_url = "http://architizer.com/search/q/q:#{architizer_queryify(query)}/"
+      response = Nokogiri::HTML(open(request_url))
+      no_result_node = response.css('div.no-results')
+      @website_data[query] = {
+        "architizer_search" => request_url,
+        "results?" => no_result_node.empty?
+      }
+      puts "#{(100.0 * idx / @queries.length).ceil}% done"
+    end
+  end
+end
 
 class ScrapeArchitects
+
+  include ArchitizerHelpers
 
   attr_accessor :website_data
 
@@ -18,10 +67,6 @@ class ScrapeArchitects
 
   def google_queryify(string)
     URI::encode(string.gsub('&', '') + ' Architizer')
-  end
-
-  def architizer_queryify(string)
-    URI::encode(string.gsub('&', ''))
   end
 
   def scrape_archdaily(last_page = 10)

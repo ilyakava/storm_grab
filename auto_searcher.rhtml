@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <style>
+      h2 {
+        text-align: center;
+      }
+      table {
+        margin: 40px auto;
+      }
+      tr:nth-child(odd) {
+        background-color: #99CCFF;
+      }
+      a:visited {
+        color: red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2>Created: <%= Time.now %></h2>
+    <table>
+      <tbody>
+        <tr>
+          <th>Architect Co</th>
+          <th>Architizer Search</th>
+          <th>Found?</th>
+        </tr>
+        <% @website_data.each_pair do |arch_co, values| %>
+          <tr>
+            <td><%= arch_co %></td>
+            <td><a target="_blank" href="<%= values["architizer_search"] %>">Architizer</a></td>
+            <td><%= values["results?"] ? 'Found' : 'NOT FOUND' %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </body>
+<html>
