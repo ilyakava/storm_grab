@@ -1,7 +1,10 @@
 To run the Arch Daily scraper, type `ruby "run.rb"` in the terminal.
 
-To search many queries on the Architizer website and make a table of results:
-1. `irb`
-2. make an array of queries (each item is a string, and is separated by commas, and surrounded by brackets: `[`) and save it to a variable, ex: `quereies = ["Populous"]`
-3. Instantiate the `SearchArchitizer` class with the queries as its argument: `SearchArchitizer.new(queries)`
-4. double click on the `table.html` output
+You can either:
+1. Search for a list of queries on architizer
+    * type `./bin/search ` and then drag and drop a csv file containing queries in each row into the terminal
+    * every row in the csv becomes a single query
+    * the output is a `table.csv` file
+2. Scrape architecture websites for new project entries
+    * type `./bin/scrape` and scrape several architechture websites for entries
+    * the output is a `table.html` file
