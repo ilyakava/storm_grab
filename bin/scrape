@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+require_relative '../scrape_architizer'
+
+puts "if percentage count stalls, press 'Control+c' and check internet availibility"
+ScrapeArchitects.new.export_html
+puts "double click on table.html"
