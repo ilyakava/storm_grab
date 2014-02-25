@@ -5,6 +5,8 @@ require_relative '../search_architizer'
 
 file = ARGV[0]
 
+raise 'you must drag and drop a csv file with queries into the terminal when running this command' unless file
+
 queries_array = []
 
 puts 'reading input file'
