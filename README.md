@@ -1,5 +1,3 @@
-To run the Arch Daily scraper, type `ruby "run.rb"` in the terminal.
-
 You can either:
 1. Search for a list of queries on architizer
     * type `./bin/search ` and then drag and drop a csv file containing queries in each row into the terminal
