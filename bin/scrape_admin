@@ -11,6 +11,6 @@ raise 'you must provide a password' unless password
 file_path = ARGV[2]
 raise 'you must drag and drop a csv file with queries into the terminal when running this command' unless file_path
 
-puts "if progress stalls, press 'Control+c' and check internet availibility"
+puts "if progress stalls, press 'Control+c' and check internet availability"
 ScrapeArchitectizerAdmin.new(username, password, file_path)
 puts "double click on table.csv in the storm_grab directory "

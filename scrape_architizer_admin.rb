@@ -35,6 +35,7 @@ class ScrapeArchitectizerAdmin
     curr_page = search_page
     ::CSV.foreach(filepath, headers: true) do |c|
       print "."
+      raise "there is no 'Firm Name' column in the csv you provided, check for extra spaces and typos" unless c["Firm Name"]
       search_field = curr_page.form_with(id: "changelist-search")
       cleansed_firm_name = clean_firm_name(c["Firm Name"])
       search_field["q"] = cleansed_firm_name

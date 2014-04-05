@@ -3,21 +3,20 @@
 Make the results rain down from the cloud.
 
 ![lightning pic](http://cl.ly/image/3G2Q2o3s3Z16/lightening_crack.png)
-
 [image source](http://www.clipartpal.com/clipart_pd/weather/lightning_10217.html)
 
 ## Use Cases
 
-1. Search the admin panel for matching firms
+1. Search the Architizer admin panel for matching firms
     * type `./bin/scrape_admin your_admin_username your_admin_password ` and then drag and drop a csv file containing firm names in each row into the terminal
-    * NOTE: There **must*** exist a column titled `Firm Name` in the csv file that you provide. If all other columns will be ignored.
+    * NOTE: There **must*** exist a column **exactly** titled `Firm Name` (no extra spaces or typos) in the csv file that you provide. All other columns will be ignored.
     * the file that you provide will remain unmodified
     * the output is a `table.csv` file
-2. Search for a list of queries on Architizer
+2. Search for a list of queries on the public facing Architizer.com
     * type `./bin/search ` and then drag and drop a csv file containing queries in each row into the terminal
     * every row in the csv becomes a single query
     * the output is a `table.csv` file
-3. Scrape architecture websites for new project entries
+3. Scrape ArchDaily for new project (i.e. blog) entries
     * type `./bin/scrape` and scrape several architecture websites for entries
     * the output is a `table.html` file
 
