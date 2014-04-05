@@ -2,7 +2,7 @@
 
 Make the results rain down from the cloud.
 
-![lightning pic](http://cl.ly/image/3G2Q2o3s3Z16)
+![lightning pic](http://cl.ly/image/3G2Q2o3s3Z16/lightening_crack.png)
 
 [image source](http://www.clipartpal.com/clipart_pd/weather/lightning_10217.html)
 
