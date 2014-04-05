@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+
+require_relative '../scrape_architizer_admin'
+
+username = ARGV[0]
+
+raise 'you must provide a valid login' unless username && username =~ /@/
+
+password = ARGV[1]
+raise 'you must provide a password' unless password
+file_path = ARGV[2]
+raise 'you must drag and drop a csv file with queries into the terminal when running this command' unless file_path
+
+puts "if progress stalls, press 'Control+c' and check internet availibility"
+ScrapeArchitectizerAdmin.new(username, password, file_path)
+puts "double click on table.csv in the storm_grab directory "
