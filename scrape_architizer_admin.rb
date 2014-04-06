@@ -37,16 +37,21 @@ class ScrapeArchitectizerAdmin
       print "."
       raise "there is no 'Firm Name' column in the csv you provided, check for extra spaces and typos" unless c["Firm Name"]
       search_field = curr_page.form_with(id: "changelist-search")
-      cleansed_firm_name = clean_firm_name(c["Firm Name"])
-      search_field["q"] = cleansed_firm_name
-      curr_page = (results_page = search_field.submit)
-      any_results = results_page.content.match(/<h4>Nothing found!<\/h4>/).nil?
+      unless search_field.nil?
+        cleansed_firm_name = clean_firm_name(c["Firm Name"])
 
-      website_data[c["Firm Name"]] = { "any_results" => any_results, "results" => [] }
-      if any_results
-        result_firm_links = results_page.links_with(href: /\/admin\/firms\/firm\/\d+/)
-        result_firm_names = result_firm_links.map(&:text)
-        website_data[c["Firm Name"]]["results"] += result_firm_names
+        search_field["q"] = cleansed_firm_name
+        curr_page = (results_page = search_field.submit)
+        any_results = results_page.content.match(/<h4>Nothing found!<\/h4>/).nil?
+
+        website_data[c["Firm Name"]] = { "any_results" => any_results, "results" => [] }
+        if any_results
+          result_firm_links = results_page.links_with(href: /\/admin\/firms\/firm\/\d+/)
+          result_firm_names = result_firm_links.map(&:text)
+          website_data[c["Firm Name"]]["results"] += result_firm_names
+        end
+      else
+        website_data[c["Firm Name"]] = { "any_results" => "ERROR", "results" => [] }
       end
     end
     website_data
