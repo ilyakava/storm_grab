@@ -9,33 +9,57 @@ class ScrapeArchitectizerAdmin
   attr_accessor :website_data
 
   def initialize(username, password, filepath)
-    @agent = Mechanize.new
-    menu = login(username, password)
-    search_page = @agent.click(menu.link_with(:href => "/admin/firms/firm/"))
+    @username = username
+    @password = password
+    @searches_until_refresh = 100
+    search_page = refresh_search_page
     result_hash = execute_searches(search_page, filepath)
     export_csv(result_hash)
     self
   end
 
-  def login(username, password)
+  # returns the admin search page
+  # search page goes dead soon after 100 queries
+  def refresh_search_page
+    agent = Mechanize.new
+    menu = login(agent)
+    @searches_until_refresh = 100
+    agent.click(menu.link_with(:href => "/admin/firms/firm/"))
+  end
+
+  def login(agent)
     puts "Logging into admin panel..."
-    @agent.get("http://architizer.com/admin")
-    form = @agent.page.forms[0]
-    form["username"] = username
-    form["password"] = password
+    agent.get("http://architizer.com/admin")
+    form = agent.page.forms[0]
+    form["username"] = @username
+    form["password"] = @password
     res = form.submit
-    puts "Logged In!"
-    res
+    if res.content.match(/Please enter the correct Username and password/i)
+      puts "X" * 100
+      puts "You have entered an INVALID username and password"
+      puts "X" * 100
+      raise "You have entered an INVALID username and password"
+    else
+      puts "Logged In!"
+      res
+    end
   end
 
   # returns a hash of result information
   def execute_searches(search_page, filepath)
     puts "searching admin panel for firms provided..."
     website_data = {}
+    num = 1
     curr_page = search_page
-    ::CSV.foreach(filepath, headers: true) do |c|
+    ::CSV.foreach(filepath, encoding: 'iso-8859-1:utf-8', headers: true,) do |c|
       print "."
-      raise "there is no 'Firm Name' column in the csv you provided, check for extra spaces and typos" unless c["Firm Name"]
+      @searches_until_refresh -= 1
+      if @searches_until_refresh < 1
+        export_csv(website_data, num)
+        num += 1
+        curr_page = refresh_search_page
+      end
+      next unless c["Firm Name"]
       search_field = curr_page.form_with(id: "changelist-search")
       unless search_field.nil?
         cleansed_firm_name = clean_firm_name(c["Firm Name"])
@@ -62,9 +86,9 @@ class ScrapeArchitectizerAdmin
     string.split(" ").reject { |word| is_stop_word?(word) }.compact.join(" ")
   end
 
-  def export_csv(result_hash)
+  def export_csv(result_hash, num = nil)
     puts "making csv..."
-    CSV.open("./table.csv", "w") do |f|
+    CSV.open("./table#{'_backup_' + num.to_s if num}.csv", "w") do |f|
       f << %w{Firm_Name Result_True_False}.concat(Array.new(10) { |i| "Result_#{i + 1}"})
       result_hash.each_pair do |firm_name, res_h|
         f << [firm_name, res_h["any_results"], *res_h["results"]]
