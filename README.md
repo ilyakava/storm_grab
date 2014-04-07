@@ -22,7 +22,7 @@ Make the results rain down from the cloud.
     * type `./bin/search ` and then drag and drop a csv file containing queries in each row into the terminal
     * every row in the csv becomes a single query
     * the output is a `table.csv` file
-3. Scrape ArchDaily for new project (i.e. blog) entries
+3. Scrape Architecture Blogs for new project (i.e. blog) entries
     * type `./bin/scrape` and scrape several architecture websites for entries
     * the output is a `table.html` file
 
