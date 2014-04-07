@@ -12,6 +12,12 @@ Make the results rain down from the cloud.
     * NOTE: There **must*** exist a column **exactly** titled `Firm Name` (no extra spaces or typos) in the csv file that you provide. All other columns will be ignored.
     * the file that you provide will remain unmodified
     * the output is a `table.csv` file
+        * there will be incremental backups every 100 firms when you run this script
+            *  it is safe to ignore them if the process completes and a `table.csv` file is generated
+            *  the backups are titled `table_backup_X.csv` where `X` is a number
+                *  higher numbers mean the backup was created later, and has more recent data
+            *  if your process keeps failing, gather what data you get from the latest backup file, and log an issue on this project
+                -  i.e. find and click the "Issues" text on the right of this text, near the top of the web page
 2. Search for a list of queries on the public facing Architizer.com
     * type `./bin/search ` and then drag and drop a csv file containing queries in each row into the terminal
     * every row in the csv becomes a single query
@@ -26,6 +32,12 @@ Make the results rain down from the cloud.
     * this means you must open the Terminal application
     * and type `cd `  (note the space) and then drag in the `storm_grab` folder that you have found in Finder, and hit enter
 * always remember to update `storm_grab` (below) if you have not done so recently
+* These should be givens:
+    - You must have ruby installed
+        + if on a mac, [follow this guide](http://www.moncefbelyamani.com/how-to-install-xcode-homebrew-git-rvm-ruby-on-mac)
+        + else, google for it
+    - You must have bundler installed
+        + unless you know what you are doing: `sudo gem install bundler` and type in your password
 
 ### Updating Storm_grab
 
