@@ -68,7 +68,7 @@ class ScrapeArchitectizerAdmin
         curr_page = (results_page = search_field.submit)
         any_results = results_page.content.match(/<h4>Nothing found!<\/h4>/).nil?
 
-        website_data[c["Firm Name"]] = { "any_results" => any_results, "results" => [] }
+        website_data[c["Firm Name"]] = { "any_results" => any_results, "results" => [], "other" => (c.fields - [c["Firm Name"]])}
         if any_results
           result_firm_links = results_page.links_with(href: /\/admin\/firms\/firm\/\d+/)
           result_firm_names = result_firm_links.map(&:text)
@@ -89,9 +89,9 @@ class ScrapeArchitectizerAdmin
   def export_csv(result_hash, num = nil)
     puts "making csv..."
     CSV.open("./table#{'_backup_' + num.to_s if num}.csv", "w") do |f|
-      f << %w{Firm_Name Result_True_False}.concat(Array.new(10) { |i| "Result_#{i + 1}"})
+      f << %w{Firm_Name Result_True_False Results}
       result_hash.each_pair do |firm_name, res_h|
-        f << [firm_name, res_h["any_results"], *res_h["results"]]
+        f << [firm_name, res_h["any_results"], res_h["results"], *res_h["other"]]
       end
     end
   end
