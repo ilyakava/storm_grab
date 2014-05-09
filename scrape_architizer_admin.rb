@@ -21,10 +21,16 @@ class ScrapeArchitectizerAdmin
   # returns the admin search page
   # search page goes dead soon after 100 queries
   def refresh_search_page
-    agent = Mechanize.new
-    menu = login(agent)
+    @agent = Mechanize.new
+    menu = login(@agent)
     @searches_until_refresh = 100
-    agent.click(menu.link_with(:href => "/admin/firms/firm/"))
+    @agent.click(menu.link_with(:href => "/admin/firms/firm/"))
+  end
+
+  # if there are many searches that yield no results, all past query params
+  # will get stuck in the url
+  def soft_refresh_search_page
+    @agent.get("http://architizer.com/admin/firms/firm/")
   end
 
   def login(agent)
@@ -54,6 +60,7 @@ class ScrapeArchitectizerAdmin
     ::CSV.foreach(filepath, encoding: 'iso-8859-1:utf-8', headers: true,) do |c|
       print "."
       @searches_until_refresh -= 1
+      soft_refresh_search_page if @searches_until_refresh % 4 == 0
       if @searches_until_refresh < 1
         export_csv(website_data, num)
         num += 1
@@ -83,7 +90,7 @@ class ScrapeArchitectizerAdmin
 
   # remove general terms from search name that narrow results unnecessarily
   def clean_firm_name(string)
-    string.split(" ").reject { |word| is_stop_word?(word) }.compact.join(" ")
+    remove_bad_chars(string.split(" ").reject { |word| is_stop_word?(word) }.compact.join(" "))
   end
 
   def export_csv(result_hash, num = nil)

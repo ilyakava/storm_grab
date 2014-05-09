@@ -8,7 +8,11 @@ module ArchitizerHelpers
     STOP_WORDS.any? { |w| word.match %r{#{w}}i }
   end
 
+  def remove_bad_chars(string)
+    string.gsub(/[^A-Za-z1-9\s]/, "")
+  end
+
   def architizer_queryify(string)
-    URI::escape(string.gsub('&', ''))
+    URI::escape(remove_bad_chars(string))
   end
 end
