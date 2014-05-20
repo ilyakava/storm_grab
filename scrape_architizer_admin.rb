@@ -68,11 +68,17 @@ class ScrapeArchitectizerAdmin
       end
       next unless c["Firm Name"]
       search_field = curr_page.form_with(id: "changelist-search")
-      unless search_field.nil?
-        cleansed_firm_name = clean_firm_name(c["Firm Name"])
-
-        search_field["q"] = cleansed_firm_name
-        curr_page = (results_page = search_field.submit)
+      cleansed_firm_name = clean_firm_name(c["Firm Name"])
+      query = architizer_queryify(cleansed_firm_name)
+      unless search_field.nil? || query == ""
+        # visit a page instead of using the search bar (started failing by combinning many search terms in one)
+        results_page = begin
+          @agent.get("http://architizer.com/admin/firms/firm/?q=#{query}")
+        rescue
+          website_data[c["Firm Name"]] = { "any_results" => "ERROR", "results" => [] }
+          next
+        end
+        curr_page = results_page
         any_results = results_page.content.match(/<h4>Nothing found!<\/h4>/).nil?
 
         website_data[c["Firm Name"]] = { "any_results" => any_results, "results" => [], "other" => (c.fields - [c["Firm Name"]])}
