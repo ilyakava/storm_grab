@@ -101,10 +101,10 @@ class ScrapeArchitectizerAdmin
 
   def export_csv(result_hash, num = nil)
     puts "making csv..."
-    CSV.open("./table#{'_backup_' + num.to_s if num}.csv", "w") do |f|
+    CSV.open("./table#{'_backup_' + num.to_s if num}.csv", 'w:UTF-8') do |f|
       f << %w{Firm_Name Result_True_False Results}
       result_hash.each_pair do |firm_name, res_h|
-        f << [firm_name, res_h["any_results"], res_h["results"], *res_h["other"]]
+        f << ensure_utf8([firm_name, res_h["any_results"], res_h["results"], *res_h["other"]])
       end
     end
   end

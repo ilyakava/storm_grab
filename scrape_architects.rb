@@ -102,7 +102,7 @@ class ScrapeArchitects
         name, data = all_data.first
         f << data.keys
         all_data.each_pair do |name, data|
-          f<< data.values.map { |e| e.force_encoding(Encoding.find("UTF-8")) }
+          f<< ensure_utf8(data.values)
         end
       end
     end
