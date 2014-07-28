@@ -94,11 +94,6 @@ class ScrapeArchitectizerAdmin
     website_data
   end
 
-  # remove general terms from search name that narrow results unnecessarily
-  def clean_firm_name(string)
-    remove_bad_chars(string.split(" ").reject { |word| is_stop_word?(word) }.compact.join(" "))
-  end
-
   def export_csv(result_hash, num = nil)
     puts "making csv..."
     CSV.open("./table#{'_backup_' + num.to_s if num}.csv", 'w:UTF-8') do |f|

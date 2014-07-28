@@ -2,14 +2,20 @@ require 'open-uri'
 
 module ArchitizerHelpers
 
-  STOP_WORDS = %w{Architecture Architects Architekten Architectes architect LLP Associates Arhitekti arquitectura Arkitekter Arquitectos Arquitecto Architekti & and , \+ Associates} 
+  STOP_WORDS = %w{Architecture Architects Architekten Architectes architect LLP Associates Arhitekti arquitectura Arkitekter Arquitectos Arquitecto Architekti & and , \+ Associate}
 
+  # debated whether words should be split differently or matches should be more strict...
   def is_stop_word?(word)
-    STOP_WORDS.any? { |w| word.match %r{#{w}}i }
+    STOP_WORDS.any? { |w| word.match /^#{w}$/i }
+  end
+
+  # remove general terms from search name that narrow results unnecessarily
+  def clean_firm_name(string)
+    remove_bad_chars(string.split(/\s/).reject { |word| is_stop_word?(word) }.compact.join(" "))
   end
 
   def remove_bad_chars(string)
-    string.gsub(/[^A-Za-z1-9\s]/, "")
+    string.gsub(/[^A-Za-z1-9\s]/, " ")
   end
 
   def architizer_queryify(string)
