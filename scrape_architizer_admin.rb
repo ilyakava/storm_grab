@@ -81,7 +81,8 @@ class ScrapeArchitectizerAdmin
         curr_page = results_page
         any_results = results_page.content.match(/<h4>Nothing found!<\/h4>/).nil?
 
-        website_data[c["Firm Name"]] = { "any_results" => any_results, "results" => [], "other" => (c.fields - [c["Firm Name"]])}
+        google_link = "https://www.google.com/#q=#{google_queryify(c["Firm Name"])}"
+        website_data[c["Firm Name"]] = { "any_results" => any_results, "results" => [], "google_link" => google_link, "other" => (c.fields - [c["Firm Name"]])}
         if any_results
           result_firm_links = results_page.links_with(href: /\/admin\/firms\/firm\/\d+/)
           result_firm_names = result_firm_links.map(&:text)
@@ -97,9 +98,9 @@ class ScrapeArchitectizerAdmin
   def export_csv(result_hash, num = nil)
     puts "making csv..."
     CSV.open("./table#{'_backup_' + num.to_s if num}.csv", 'w:UTF-8') do |f|
-      f << %w{Firm_Name Result_True_False Results}
+      f << %w{Firm_Name Result_True_False Google_Link Results}
       result_hash.each_pair do |firm_name, res_h|
-        f << ensure_utf8([firm_name, res_h["any_results"], res_h["results"], *res_h["other"]])
+        f << ensure_utf8([firm_name, res_h["any_results"], res_h["google_link"], res_h["results"], *res_h["other"]])
       end
     end
   end

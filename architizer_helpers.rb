@@ -31,4 +31,8 @@ module ArchitizerHelpers
       arg
     end
   end
+
+  def google_queryify(string)
+    URI::encode(string.gsub('&', '') + ' Architizer')
+  end
 end
